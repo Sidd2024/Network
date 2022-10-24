@@ -1,0 +1,63 @@
+{% extends "network/layout.html" %}
+
+{% block title %} {{ profile.user }}{% endblock %}
+
+{% block body %}
+<br>
+<center><h1>{{ profile.username }}</h1></center>
+{% if request.user.is_authenticated and request.user.id != profile.id %}
+<br>
+{% if follows > 0 %}
+<center><button class="btn-style" id="btnfollow" data-id="{{user_prof.id}}" type="button"><a class="btn-link" href="{% url 'follow' profile.id %}">Following</a></button></center>
+{% else %}
+<center><button class="btn-style" id="btnfollow" data-id="{{user_prof.id}}" type="button"> <a class="btn-link" href="{% url 'follow' profile.id %}">Follow</a></button></center>
+{% endif %}
+
+{% endif %}
+<div id = "follower-block">
+    <center><h5>{{ followers }}<br>FOLLOWERS</h5></center>
+    </div>
+    <div id = "following-block">
+    <center><h5>{{ following }}<br>FOLLOWING</h5.</center>
+    </div>
+    <br><br><br><br>
+<div id = "post-block">
+
+{% for post in posts %}
+<div class="post-block">
+<table>
+    <tr>
+        <td id = "user-cell">
+            <strong><a class="user-name" href="{% url 'profile' post.user %}">{{ post.user }}</a></strong>
+        </td>
+        <td id = "like-btn">
+            {% if post.user == request.user %}
+            <button class="btn-style"> <span class="btn-link" class="text-primary edit"  data-id="{{post.id}}" id="edit-btn-{{post.id}}">Edit</span> </button>
+            {% endif %}
+            <p id="post-content-{{post.id}}" class="post">{{ post.content }}</p>
+            {% if post.curr_like > 0 %}
+            <div data-id="{{post.id}}" class= "fas fa-heart">&nbsp<small>{{ post.like }}</small></div>
+            {% else %}
+            <div data-id="{{post.id}}" class= "far fa-heart">&nbsp<small>{{ post.like }}</small></div>
+            {% endif %}
+            <textarea data-id="{{post.id}}" id="edit-post-{{post.id}}" style="display:none;" row="3">{{post.post}}</textarea>
+            
+        </td>
+        <p id="timestamp">
+            <i>{{ post.time }}</i>
+        </p>
+    </tr>
+</table>
+</div><br>
+{% endfor %}
+<br>
+{% if posts.has_previous %}
+<Center><button class="btn-style"><a class="btn-link" href="{% url 'profile' profile.user %}?page={{ posts.previous_page_number }}"><-Previous</a></button></Center>
+{% endif %}
+<br>
+{% if posts.has_next %}
+<Center><button class="btn-style"><a class="btn-link" href="{% url 'profile' profile.user %}?page={{ posts.next_page_number }}">Next-></a></button></Center>
+{% endif %}
+<br>
+
+{% endblock %}

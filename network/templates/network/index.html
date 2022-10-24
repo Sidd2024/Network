@@ -1,0 +1,50 @@
+{% extends "network/layout.html" %}
+
+{% block title %}home{% endblock %}
+
+{% block body %}
+{% if message %}
+<div>{{ message }}</div>
+{% endif %}
+<br>
+<center><h2>HOME</h2></center>
+<br>
+{% for post in posts %}
+<div class="post-block">
+<table>
+    <tr>
+        <td id = "user-cell">
+            <strong><a class="user-name" href="{% url 'profile' post.user %}">{{ post.user }}</a></strong>
+        </td>
+        <td id = "like-btn">
+            {% if post.user == request.user %}
+           <button class="btn-style"> <span class="text-primary edit" data-id="{{post.id}}" id="edit-btn-{{post.id}}">Edit</span> </button>
+            {% endif %}
+            <p id="post-content-{{post.id}}" class="post">{{ post.content }}</p>
+            {% if post.curr_like > 0 %}
+            <div data-id="{{post.id}}" class= "fas fa-heart">&nbsp<small>{{ post.like }}</small></div>
+            {% else %}
+            <div data-id="{{post.id}}" class= "far fa-heart">&nbsp<small>{{ post.like }}</small></div>
+            {% endif %}
+            <textarea data-id="{{post.id}}" id="edit-post-{{post.id}}" style="display:none;" row="3">{{post.post}}</textarea>
+            
+        </td>
+        <p id="timestamp">
+            <i>{{ post.time }}</i>
+        </p>
+    </tr>
+</table>
+</div>
+<br>
+{% endfor %}
+<br>
+
+{% if posts.has_previous %}
+<Center><button class="btn-style"><a class="btn-link" href="{% url 'index' %}?page={{ posts.previous_page_number }}"><-Previous</a></button></Center>
+{% endif %}
+<br>
+{% if posts.has_next %}
+<Center><button class="btn-style"><a class="btn-link" href="{% url 'index' %}?page={{ posts.next_page_number }}">Next-></a></button></Center>
+{% endif %}
+<br><br>
+{% endblock %}
